@@ -43,11 +43,13 @@ function Books() {
     setOpen(false);
   };
 
-  function handleSubmit(body) {
+  function handleSubmit(body, syncro) {
     createBook(body)
       .then(res => {
         let bookAux = books;
-        bookAux.push(res.data);
+        let resAux = res.data
+        resAux.publisher_name = syncro.publisher_name;
+        bookAux.push(resAux);
         setBooks([...bookAux]);
         handleClose();
         setOpenAlert(true);

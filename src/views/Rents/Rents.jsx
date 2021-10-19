@@ -28,8 +28,8 @@ function Rents() {
     getRents()
       .then(res => {
         res.data.map(item => {
-          item.rent_date = moment(item.rent_date, 'YYYY-MM-DD HH:MM:SS').format('DD/MM/YYYY');
-          item.devolution_date = moment(item.devolution_date, 'YYYY-MM-DD HH:MM:SS').format('DD/MM/YYYY');
+          item.rent_date = moment(item.rent_date, 'YYYY-MM-DD').format('DD/MM/YYYY');
+          item.devolution_date = moment(item.devolution_date, 'YYYY-MM-DD').format('DD/MM/YYYY');
           return null;
         })
         setRents([...res.data]);
@@ -44,12 +44,14 @@ function Rents() {
     setOpen(false);
   };
 
-  function handleSubmit(body) {
-    console.log("body: ", body);
+  function handleSubmit(body, syncro) {
     createRent(body)
       .then(res => {
         let rentAux = rents;
-        rentAux.push(res.data);
+        let resAux = res.data;
+        resAux.user_name = syncro.user_name;
+        resAux.book_name = syncro.book_name;
+        rentAux.push(resAux);
         setRents([...rentAux]);
         handleClose();
         setOpenAlert(true);

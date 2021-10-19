@@ -9,6 +9,7 @@ function ModalRegister({ fields, submitFunction, open, handleClose }) {
   const [loading, setLoading] = useState(true);
   const [selectArray, setSelectArray] = useState([]);
   const [selectArray2, setSelectArray2] = useState([]);
+  const [syncro, setSyncro] = useState({});
 
   useEffect(() => {
     let itemsAux = {};
@@ -38,31 +39,37 @@ function ModalRegister({ fields, submitFunction, open, handleClose }) {
 
   function _handleSubmit(e) {
     e.preventDefault();
-    submitFunction(items);
+    submitFunction(items, syncro);
   };
 
   function _handleChange(item, e) {
     let itemAux = items;
     itemAux[item.property] = e.target.value;
-    // if (item.property === "publisher") {
-    //   const index = selectArray.findIndex(el => {
-    //     if (el.id === itemAux[item.property])
-    //       return true;
-    //   })
-    //   itemAux.publisher_name = selectArray[index].publisher_name;
-    // } else if (item.property === "user") {
-    //   const index = selectArray.findIndex(el => {
-    //     if (el.id === itemAux[item.property])
-    //       return true;
-    //   })
-    //   itemAux[`${item.property}_name`] = selectArray[index][`${item.property}_name`]
-    // } else if (item.property === "book") {
-    //   const index = selectArray2.findIndex(el => {
-    //     if (el.id === itemAux[item.property])
-    //       return true;
-    //   })
-    //   itemAux[`${item.property}_name`] = selectArray2[index][`${item.property}_name`]
-    // }
+    if (item.property === "publisher") {
+      let syncroAux = syncro;
+      const index = selectArray.findIndex(el => {
+        if (el.id === itemAux[item.property])
+          return true;
+      })
+      syncroAux.publisher_name = selectArray[index].publisher_name;
+      setSyncro({ ...syncroAux });
+    } else if (item.property === "user") {
+      let syncroAux = syncro;
+      const index = selectArray.findIndex(el => {
+        if (el.id === itemAux[item.property])
+          return true;
+      })
+      syncroAux[`${item.property}_name`] = selectArray[index][`${item.property}_name`];
+      setSyncro({ ...syncroAux });
+    } else if (item.property === "book") {
+      let syncroAux = syncro;
+      const index = selectArray2.findIndex(el => {
+        if (el.id === itemAux[item.property])
+          return true;
+      })
+      syncroAux[`${item.property}_name`] = selectArray2[index][`${item.property}_name`];
+      setSyncro({ ...syncroAux });
+    }
     setItems({ ...itemAux });
   };
 
@@ -107,7 +114,13 @@ function ModalRegister({ fields, submitFunction, open, handleClose }) {
                   <MenuItem value="" disabled>{item.property === "publisher" ? "Editora" : "Usuários"}</MenuItem>
                   {selectArray.map(item2 => {
                     return (
-                      <MenuItem value={item2.id} name={item2[`${item.property}_name`]} key={item2[`${item.property}_name`]}>{item2[`${item.property}_name`]}</MenuItem>
+                      <MenuItem
+                        value={item2.id}
+                        name={item2[`${item.property}_name`]}
+                        key={item2[`${item.property}_name`]}
+                      >
+                        {item2[`${item.property}_name`]}
+                      </MenuItem>
                     );
                   })}
                 </Select>
